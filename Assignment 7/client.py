@@ -1,18 +1,31 @@
-import socket
-s = socket.socket()
-host = socket.gethostname()
-port = 5004
-s.connect((host,port))
-print("Connected.")
-sentence = input("Set path of the file : ")
-s.send(sentence.encode())
+import socket                 
+s = socket.socket()          
+port = 12345                
+s.connect(('127.0.0.1', port)) 
 
-filename = input(str("Enter incoming file name : "))
-file = open(filename, 'a')
-file_data = s.recv(1024)
-file.write("\n")
-file.write(file_data.decode("utf-8"))
-file.close()
-print("File received successfully.")
+path = input("Path : ") 
+
+print("Processes : \n 1) quit \n 2) print \n 3) transfer_tc \n 4) transfer_ts ")
+
+while True:
+    command = input("Enter the process : ")
+    if command == "quit":
+        break
+    elif command == "print":
+        filename = input("Enter the name of file being read : ")
+        doc = open(path+filename,'r')
+        print(doc.read())
+    elif command == "transfer_tc": 
+        filename = input("Enter the name of file being transfered : ")
+        doc = open(path+filename,'ab')
+        doc_data = s.recv(1024)
+        doc.write(doc_data)
+        print("File has been received successfully...")
+    elif command == "transfer_ts":
+        filename = input("Input the name of the file: ")
+        doc = open(path+filename,'rb')
+        doc_data = doc.read(1024)
+        s.send(doc_data)
+        print("Data has been sent....")
 
 s.close()
